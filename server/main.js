@@ -91,7 +91,9 @@ app.use('/api', api);
 
 app.use(express.static(__dirname + '/../www/'));
 
-var server = app.listen(3000, '127.0.0.1', function() {
+var port = Number(process.env.PORT || 3000);
+
+var server = app.listen(port, function() {
     console.log('Listening on port %d', server.address().port);
 });
 
