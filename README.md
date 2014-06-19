@@ -1,88 +1,43 @@
-Ionic App Base
-=====================
+Flash Surveys is a simple survey app demonstrating the use of Heroku Connect to deploy
+a mobile app on Heroku which is integrated with Force.com.
 
-A starting project for Ionic that optionally supports
-using custom SCSS.
+## How to use the app
 
-## Using this project
+Surveys are created in force.com. Heroku Connect will sync each survey to the Postgres
+DB where it becomes available to the app.
 
-We recommend using the `ionic` utility to create new Ionic projects that are based on this project but use a ready-made starter template.
+Run the Node.js server:
 
-For example, to start a new Ionic project with the default tabs interface, make sure the `ionic` utility is installed:
+    npm install
+    node server/main.js
 
-```bash
-$ sudo npm install -g ionic
-```
+Open the app:
 
-Then run:
+    http://localhost:3000
 
-```bash
-$ sudo npm install -g ionic
-$ ionic start myProject tabs
-```
+Register with an email address and password, then login with same.
 
-More info on this can be found on the Ionic [Getting Started](http://ionicframework.com/getting-started) page.
+Tap a survey, then you can complete the survey. At the end your reponses are saved
+to the db where they are sync'd back to force.com.
 
-## Installation
+Open the FlashSurveys tab in force.com to review the responses.
 
-While we recommend using the `ionic` utility to create new Ionic projects, you can use this repo as a barebones starting point to your next Ionic app.
+## Structure of this app
 
-To use this project as is, first clone the repo from GitHub, then run:
+The app contains a Node.js server component in `server`, and an AngularJS/Ionic
+front-end in `client`. 
 
-```bash
-$ cd ionic-app-base
-$ sudo npm install -g cordova ionic gulp
-$ npm install
-$ gulp install
-```
+The Node app will both serve the static assets the Angular client as well as handle
+Ajax requests to interacting with the database.
 
-## Using Sass (optional)
+## File structure
 
-This project makes it easy to use Sass (the SCSS syntax) in your projects. This enables you to override styles from Ionic, and benefit from
-Sass's great features.
+    client/            AngularJS app
+      index.html       Main app page
+      web.html         Desktop browser frame
 
-Just update the `./scss/ionic.app.scss` file, and run `gulp` or `gulp watch` to rebuild the CSS files for Ionic.
+    server/     Node.js backend
+      main.js          Express app
+      
 
-Note: if you choose to use the Sass method, make sure to remove the included `ionic.css` file in `index.html`, and then uncomment
-the include to your `ionic.app.css` file which now contains all your Sass code and Ionic itself:
-
-```html
-<!-- IF using Sass (run gulp sass first), then remove the CSS include above
-<link href="css/ionic.app.css" rel="stylesheet">
--->
-```
-
-## Updating Ionic
-
-To update to a new version of Ionic, open bower.json and change the version listed there.
-
-For example, to update from version `1.0.0-beta.4` to `1.0.0-beta.5`, open bower.json and change this:
-
-```
-"ionic": "driftyco/ionic-bower#1.0.0-beta.4"
-```
-
-To this:
-
-```
-"ionic": "driftyco/ionic-bower#1.0.0-beta.5"
-```
-
-After saving the update to bower.json file, run `gulp install`.
-
-Alternatively, install bower globally with `npm install -g bower` and run `bower install`.
-
-#### Using the Nightly Builds of Ionic
-
-If you feel daring and want use the bleeding edge 'Nightly' version of Ionic, change the version of Ionic in your bower.json to this:
-
-```
-"ionic": "driftyco/ionic-bower#master"
-```
-
-Warning: the nightly version is not stable.
-
-
-## Issues
-Issues have been disabled on this repo, if you do find an issue or have a question consider posting it on the [Ionic Forum](http://forum.ionicframework.com/).  Or else if there is truly an error, follow our guidelines for [submitting an issue](http://ionicframework.com/contribute/#issues) to the main Ionic repository. On the other hand, pull requests are welcome here!
 

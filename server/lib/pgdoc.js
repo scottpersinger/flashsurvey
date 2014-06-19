@@ -3,7 +3,7 @@ var $pg = require('pg')
 
 // Tables: "select * from pg_tables where schemaname = 'public'""
 
-JSONPG = {
+PGDOC = {
   $tables: [],
   $db : null,
   $schemas : {},
@@ -421,4 +421,5 @@ JSONPG = {
 
 };
 
-module.exports = JSONPG
+module.exports = PGDOC
+

@@ -1,10 +1,9 @@
 var express = require('express')
   , bodyParser = require('body-parser')
   , expressValidator = require('express-validator')
-  , passport =    require('passport')
   , config = require('./config')
   , session = require('cookie-session')
-  , auth = require('./controllers/auth2')
+  , auth = require('./controllers/auth')
   , jsondb = config.jsondb
 
 
@@ -15,8 +14,6 @@ app.use(session(
     {
         secret: process.env.COOKIE_SECRET || "Superdupersecret"
     }));
-app.use(passport.initialize());
-app.use(passport.session());
 
 
 
@@ -89,7 +86,7 @@ api.post('/flashquestionresponse__c', function(req, res) {
 
 app.use('/api', api);
 
-app.use(express.static(__dirname + '/../www/'));
+app.use(express.static(__dirname + '/../client/'));
 
 var port = Number(process.env.PORT || 3000);
 

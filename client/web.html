@@ -1,0 +1,42 @@
+<html>
+<body>
+	<img src="img/biphone.png" style="width:460px"/>
+
+	<iframe src="index.html" style="position:absolute;top:59px;left:44px;width:378px;height:674px"></iframe>
+
+<div style="float:right;width:500px;margin-right:80px">
+<h1>Flash Surveys</h1>
+
+<p>Flash Surveys is a simple survey app demonstrating the use of Heroku Connect to deploy
+a mobile app on Heroku which is integrated with Force.com.</p>
+<h2 id="how-to-use-the-app">How to use the app</h2>
+<p>Surveys are created in force.com. Heroku Connect will sync each survey to the Postgres
+DB where it becomes available to the app.</p>
+<p>Run the Node.js server:</p>
+<pre><code>npm install
+node server/main.js
+</code></pre>
+<p>Open the app:</p>
+<pre><code>http://localhost:3000
+</code></pre>
+<p>Register with an email address and password, then login with same.</p>
+<p>Tap a survey, then you can complete the survey. At the end your reponses are saved
+to the db where they are sync'd back to force.com.</p>
+<p>Open the FlashSurveys tab in force.com to review the responses.</p>
+<h2 id="structure-of-this-app">Structure of this app</h2>
+<p>The app contains a Node.js server component in <code>server</code>, and an AngularJS/Ionic
+front-end in <code>client</code>. </p>
+<p>The Node app will both serve the static assets the Angular client as well as handle
+Ajax requests to interacting with the database.</p>
+<h2 id="file-structure">File structure</h2>
+<pre><code>client/            AngularJS app
+  index.html       Main app page
+  web.html         Desktop browser frame
+
+server/     Node.js backend
+  main.js          Express app
+
+
+</div>
+</body>
+</html>
