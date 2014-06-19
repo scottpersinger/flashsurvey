@@ -1,0 +1,19 @@
+<ion-view title="{{survey.name}}">
+  <ion-content class="has-header padding" ng-controller="SurveyCtrl">
+    <ion-list>
+      <form name="response">
+        <survey-question ng-show="$parent.active == question.sfid" class="ng-hide" 
+                         ng-repeat="question in questions" 
+                         type="item-text-wrap" content="question">
+        </survey-question>
+      </form>
+    </ion-list>
+    <div class="thank-you ng-hide" ng-show="finished">
+      <h2 style="padding:20px">
+        Thank you for taking our survey!
+      </h2>
+      <button class="button button-balanced" ui-sref="index">Back to Surveys</button>
+    </div>
+  </ion-content>
+</ion-view>
+

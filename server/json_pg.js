@@ -1,4 +1,5 @@
-var $pg = require('pg');
+var $pg = require('pg')
+    , Q = require('q');
 
 // Tables: "select * from pg_tables where schemaname = 'public'""
 
@@ -66,6 +67,7 @@ JSONPG = {
         });
       }
     });
+    return this;
   },
 
   tables: function() {
@@ -203,10 +205,16 @@ JSONPG = {
   },
 
   create: function(table, document, callback) {
+    var deferred = Q.defer();
     var self = this;
+
     this.define_table(table, document, function(err, schema) {
       if (err) {
-        return self.handle_result(err, null, callback);
+        if (callback) {
+          return self.handle_result(err, null, callback);
+        } else {
+          deferred.reject(err);
+        }
       } else {
         var cols = [];
         values = [];
@@ -218,9 +226,13 @@ JSONPG = {
           if (schema[k] == undefined) {
             self.add_column(table, k, document, function(err, result) {
               if (err) {
-                return self.handle_result(err, result, callback);
+                if (callback) {
+                  return self.handle_result(err, result, callback);
+                } else {
+                  deferred.reject(err);
+                }
               } else {
-                return self.create(table, document, callback);
+                deferred.resolve(self.create(table, document, callback));
               }
             });
             return;
@@ -239,21 +251,30 @@ JSONPG = {
             values.push(document[k]);
           }
         }
-        var q = "WITH t AS (INSERT INTO  " + self.$schema + "." + table + " (" + cols.join(",") +
-                ") VALUES (" + holders.join(",") + ")) " +
-                " SELECT MAX(id) as id from " + self.$schema + "." + table;
+        var q = "INSERT INTO  " + self.$schema + "." + table + " (" + cols.join(",") +
+                ") VALUES (" + holders.join(",") + ") RETURNING id";
         self.$db.query(q, values, function(err, result) {
           if (err) {
-            self.handle_result(err, null, callback, q);
+            if (callback) {
+              self.handle_result(err, null, callback, q);
+            } else {
+              deferred.reject(err);
+            }
           } else {
             if (result && result.rows && result.rows.length > 0) {
               document.id = result.rows[0].id;
             }
-            self.handle_result(err, document, callback);
+            if (callback) {
+              self.handle_result(err, document, callback);
+            } else {
+              deferred.resolve(document);
+            }
           }
         });
       }
     });
+
+    return deferred.promise;
   },
 
   where_clause: function(schema, where_doc) {
@@ -301,6 +322,8 @@ JSONPG = {
   },
 
   find: function(table, where_doc, options, callback) {
+    var deferred = Q.defer();
+
     if (typeof(options) == "function" && !callback) {
       callback = options;
       options = null;
@@ -309,11 +332,16 @@ JSONPG = {
       callback = where_doc;
       where_doc = null;
     }
+
     var self = this;
     this.table_schema(table, function(err, schema) {
       if (err) {
+        if (callback) {
+          self.handle_result(null, [], callback);
+        } else {
+          deferred.resolve([]);
+        }
         // Assume table does not exist
-        return self.handle_result(null, [], callback);
       } else {
         var clause = self.where_clause(schema, where_doc);
         var selects = [table + ".*"];
@@ -329,14 +357,68 @@ JSONPG = {
         console.log(q);
         self.$db.query(q, function(err, result) {
           if (err) {
-            self.handle_result(err, null, callback);
+            deferred.reject(err);
           } else {
-            self.handle_result(err, result.rows, callback);
+            if (callback) {
+              self.handle_result(err, result.rows, callback);
+            } else {
+              deferred.resolve(result.rows);
+            }
           }
         });
       }
-    })   
+    });
+
+    return deferred.promise;   
+  },
+
+  qualified_table: function(table) {
+    return this.$schema + "." + table;
+  },
+
+  find_one: function(table, where_doc, options, callback) {
+    var deferred = Q.defer();
+
+    this.find(table, where_doc, options).then(function(rows) {
+      if (rows && rows.length > 0) {
+        deferred.resolve(rows[0]);
+      } else {
+        deferred.reject();
+      }
+    });
+    return deferred.promise;
+  },
+
+  delete: function(table, where_doc, callback) {
+    var deferred = Q.defer();
+
+    var self = this;
+
+    this.find(table, where_doc).then(function(rows) {
+      if (rows && rows.length > 0) {
+        var ids = rows.map(function(item, idx) { return item.id });
+        var params = ids.map(function(item, idx) {return '$' + (idx+1);});
+
+        var q = "DELETE FROM " + self.qualified_table(table) + " WHERE id IN (" + params.join(",") + ")";
+        self.$db.query(q, ids, function(err, result) {
+          if (err) {
+            deferred.reject(err);
+          } else {
+            if (callback) {
+              self.handle_result(err, null, callback);
+            } else {
+              deferred.resolve();
+            }
+          }
+        });
+      } else {
+        deferred.resolve();
+      }
+    }).catch(deferred.reject);
+
+    return deferred.promise;
   }
+
 };
 
 module.exports = JSONPG

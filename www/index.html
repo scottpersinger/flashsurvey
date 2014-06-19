@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <!--meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width"-->
     <title></title>
 
     <link href="lib/ionic/css/ionic.css" rel="stylesheet">
@@ -26,95 +26,22 @@
     <script src="js/models.js"></script>
     <script src="js/services.js"></script>
 
-    <style>
-      .survey-question {
-        --box-shadow: #CCC 2px 2px 2px;
-        --border:1px solid #DDD;
-        padding:8px;
-        min-height:300px;
-      }
-
-      .qtext {
-        font-size:1.5em;
-        font-family:helvetica-neue;
-        margin-bottom:10px;
-      }
-
-      .page-number {
-        text-align: right;
-        color:#555;
-        width:80px;
-        height:40px;
-        position:absolute;
-        bottom:-40px;
-        right:0px;
-        opacity: 0.4;
-      }
-
-      textarea {
-        border:1px solid #CCC;
-        height:80px;
-      }
-
-.reveal-animation.ng-hide {
- -webkit-transition: 1s linear all; /* Safari/Chrome */
- transition: 1s linear all; /* All other modern browsers and IE10+ */
-
- /* The animation preparation code */
- opacity: 0;
-}
-
-/*
- Keep in mind that you want to combine both CSS
- classes together to avoid any CSS-specificity
- conflicts
-*/
-.reveal-animation.ng-enter.ng-enter-active {
- /* The animation code itself */
- opacity: 1;
-}      
-    </style>
-
   </head>
-  <body ng-app="flashsurvey" animation="slide-left-right-ios7">
 
+  <body ng-app="flashsurvey" animation="slide-left-right-ios7">
+    <div class="wrapper">
     <ion-nav-bar class="bar-royal nav-title-slide-ios7">
       <ion-nav-back-button class="button-icon icon  ion-ios7-arrow-back">
         Back
       </ion-nav-back-button>
+      <ion-nav-buttons side="right" ng-controller="SurveyListCtrl">
+          <button class="button" ng-show="true" class="ng-hide" ng-click="logout()">Logout</button>
+      </ion-nav-buttons>
     </ion-nav-bar>
+    
     <ion-nav-view>
     </ion-nav-view>
-
-    <script id="survey_list.html" type="text/ng-template">
-      <ion-view title="Surveys">
-        <ion-content class="has-header padding" ng-controller="SurveyListCtrl">
-          <ion-list>
-            <ion-item ng-repeat="survey in surveys" type="item-text-wrap" href="#/survey/{{survey.sfid}}">
-              {{survey.name}}
-            </ion-item>
-          </ion-list>
-        </ion-content>
-      </ion-view>
-    </script>
-
-    <script id="survey.html" type="text/ng-template">
-      <ion-view title="{{survey.name}}">
-        <ion-content class="has-header padding" ng-controller="SurveyCtrl">
-          <ion-list>
-            <form name="response">
-              <survey-question ng-show="$parent.active == question.sfid" class="ng-hide" 
-                               ng-repeat="question in questions" 
-                               type="item-text-wrap" content="question">
-              </survey-question>
-            </form>
-          </ion-list>
-          <div class="thank-you ng-hide" ng-show="finished">
-            Thank you for taking our survey!
-          </div>
-        </ion-content>
-      </ion-view>
-    </script>
+  </div>
 
   </body>
 </html>

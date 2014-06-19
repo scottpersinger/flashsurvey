@@ -1,1 +1,31 @@
-/* Empty. Add your own CSS if you like */
+.survey-question {
+--box-shadow: #CCC 2px 2px 2px;
+--border:1px solid #DDD;
+padding:8px;
+min-height:300px;
+}
+
+.qtext {
+font-size:1.5em;
+font-family:helvetica-neue;
+margin-bottom:10px;
+}
+
+.page-number {
+text-align: right;
+color:#555;
+width:80px;
+height:40px;
+position:absolute;
+bottom:-40px;
+right:0px;
+opacity: 0.4;
+}
+
+.comment {
+border:1px solid #666;
+height:120px;
+}
+
+@media all and (min-width: 500px) {
+}

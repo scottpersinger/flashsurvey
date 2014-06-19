@@ -1,23 +1,65 @@
 angular.module('flashsurvey.controllers', ['ionic'])
 
-.controller('SurveyListCtrl', function($scope, Survey) {
-	$scope.surveys = Survey.query();
+.controller('LoginCtrl', function($scope, $http, $state, $rootScope, $window, $ionicPopup, $ionicNavBarDelegate) {
+	$scope.user = {email: '', password: ''};
+
+	$scope.login = function() {
+		$http.post('/login', $scope.user)
+			.success(function (data) {
+                $rootScope.user = data.user;
+                $window.localStorage.user = JSON.stringify(data.user);
+                $window.localStorage.token = data.token;
+                $ionicNavBarDelegate.back();
+            })
+            .error(function(err) {
+            	$ionicPopup.alert({title:"Login Error", template: err});
+            });
+	}
 })
 
-.controller('SurveyCtrl', function($scope, $stateParams, $timeout, Survey, Question, SurveyResponse, QuestionResponse) {
+.controller('RegisterCtrl', function($scope, $rootScope, $http, $window, $ionicNavBarDelegate) {
+	$scope.user = {email: '', password: ''};
+
+	$scope.register = function() {
+		$http.post('/register', $scope.user)
+			.success(function (data) {
+                $rootScope.user = data.user;
+                $window.localStorage.user = JSON.stringify(data.user);
+                $window.localStorage.token = data.token;
+                $ionicNavBarDelegate.back();
+            });
+	}
+
+})
+
+.controller('SurveyListCtrl', function($scope, $state, $http, $rootScope, $window, $ionicViewService, Survey) {
+	$scope.surveys = Survey.query();
+
+	$scope.logout = function() {
+        $rootScope.user = null;
+        $window.localStorage.clear();
+
+        var promise = $http.post('/logout');
+        $window.localStorage.clear();
+        $ionicViewService.clearHistory()
+        $state.go('index', null, {reload:true});
+        return promise;
+	}
+})
+
+.controller('SurveyCtrl', function($rootScope, $scope, $stateParams, $timeout, 
+								   Survey, Question, SurveyResponse, QuestionResponse, guid) {
 	$scope.survey = Survey.get({sfid: $stateParams.sfid});
-	$scope.questions = Question.query(function() {
+	$scope.questions = Question.query({flashsurvey__c: $stateParams.sfid}, function() {
 		$scope.active = $scope.questions[0].sfid;
 	});
 	$scope.finished = false;
+
 	$scope.goNext = function(sfid) {
 		for (var i = 0; i < $scope.questions.length; i++) {
 			if ($scope.questions[i].sfid == sfid) {
 				if (i < ($scope.questions.length-1)) {
 					$scope.active = $scope.questions[i+1].sfid;
-				} else {
-					$scope.finished = true;
-					$scope.active = '';
 				}
 				break;
 			}
@@ -38,7 +80,10 @@ angular.module('flashsurvey.controllers', ['ionic'])
 	$scope.submit = function() {
 		// Answers are annotated in the 'answer' attr in each question
 		var response = new SurveyResponse();
-		response.name = "Scott";
+		response.name = $rootScope.user.email;
+		response.contact__external_id__c = $rootScope.user.email;
+		response.flashsurvey__c = $scope.survey.sfid;
+		response.external_id__c = guid();
 		response.$save(function(parent) {
 			var qresp = [];
 			$scope.questions.forEach(function(q) {
@@ -47,7 +92,7 @@ angular.module('flashsurvey.controllers', ['ionic'])
 				var k = (q.answer.choice == true || q.answer.choice == false) ? 
 					'booleanresponse__c' : 'textresponse__c';
 				res[k] = q.answer.choice;
-				res.flashsurveyresponse_external_id = parent.id;
+				res.flashsurveyresponse__c__external_id__c = response.external_id__c;
 				res.$save();
 			});
 			$scope.finished = true;
@@ -55,3 +100,4 @@ angular.module('flashsurvey.controllers', ['ionic'])
 		})
 	}
 })
+
