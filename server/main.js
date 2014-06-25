@@ -5,6 +5,7 @@ var express = require('express')
   , session = require('cookie-session')
   , auth = require('./controllers/auth')
   , jsondb = config.jsondb
+  , fs = require("fs")
 
 
 var app = express();
@@ -12,7 +13,7 @@ app.use(bodyParser());
 app.use(expressValidator());
 app.use(session(
     {
-        secret: process.env.COOKIE_SECRET || "Superdupersecret"
+        secret: process.env.COOKIE_SECRET || "93HIEH88312KSJS9(&F"
     }));
 
 
@@ -85,6 +86,17 @@ api.post('/flashquestionresponse__c', function(req, res) {
 
 
 app.use('/api', api);
+
+/*
+app.use('/', function(req, res, next){
+	// Check if UserAgent is other than a mobile device
+	res.set('Content-Type', 'text/html');
+	fs.readFile("web.html", {encoding:"utf8"}, function(err, content) {
+		res.send(content);
+	});
+});
+*/
+
 
 app.use(express.static(__dirname + '/../client/'));
 

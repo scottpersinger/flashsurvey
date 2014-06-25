@@ -1,32 +1,24 @@
-This is an addon starter template for the [Ionic Framework](http://ionicframework.com/).
+# Flash Survey AngularJS app
 
-## How to use this template
+This is the Flash Survey app built with the AngularJS/Ionic framework. The 
+app is written in Javascript. You can compile it into a native app with Apache
+Cordova or serve it from the Node.js server.
 
-*This template does not work on its own*. It is missing the Ionic library, and AngularJS.
+## Viewing on the web
 
-To use this, either create a new ionic project using the ionic node.js utility, or copy and paste this into an existing Cordova project and download a release of Ionic separately.
+To make using the app from the web a little nicer, load the `web.html` page. This
+puts the app inside an iframe with an aspect ration similar to a mobile device.
 
-### With the Ionic tool:
+## App Structure
 
-Take the name after `ionic-starter-`, and that is the name of the template to be used when using the `ionic start` command below:
+The app boots from index.html, which just loads the associated JS files. AngularJS
+is loaded first, then js/app.js and so on. 
 
-```bash
-$ sudo npm install -g ionic cordova
-$ ionic start myApp blank
-```
+Each page of the app renders a template from the templates dir, and activates
+a controller instanced defined in js/controllers.js.
 
-Then, to run it, cd into `myApp` and run:
+## Communication with the server
 
-```bash
-$ ionic platform add ios
-$ ionic build ios
-$ ionic emulate ios
-```
+All data storage happens through Ajax calls to the Node.js server. These calls use
+the `$resource` library provided by Angular for making RESTful ajax calls.
 
-Substitute ios for android if not on a Mac, but if you can, the ios development toolchain is a lot easier to work with until you need to do anything custom to Android.
-
-## Demo
-http://plnkr.co/edit/tpl:IUU30p?p=preview
-
-## Issues
-Issues have been disabled on this repo, if you do find an issue or have a question consider posting it on the [Ionic Forum](http://forum.ionicframework.com/).  Or else if there is truly an error, follow our guidelines for [submitting an issue](http://ionicframework.com/contribute/#issues) to the main Ionic repository. On the other hand, pull requests are welcome here!

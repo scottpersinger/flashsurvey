@@ -1,5 +1,5 @@
 angular.module('flashsurvey.directives', [])
-.directive('surveyQuestion', function($compile) {
+.directive('surveyQuestion', function($compile, $sanitize) {
   var header = '<div class="survey-question reveal-animation">' +
                '<div class="page-number">{{$parent.$index+1}} of {{$parent.$parent.questions.length}}</div>',
 
@@ -8,27 +8,38 @@ angular.module('flashsurvey.directives', [])
       qTempl = '<div class="qtext">{{content.question__c}}</div>',
 
       templates = {
-        Picklist: qTempl +
+        Picklist: 
+          qTempl +
                   '<ion-radio name = "pref" ng-repeat="choice in content.picklist" ' + 
                       'ng-value="choice" ng-model="content.answer.choice"> ' +
                       '{{ choice }}' +
                   '</ion-radio>',
-        Boolean: qTempl + 
-                 'No <label class="toggle toggle-positive">' +
-                 '<input type="checkbox" ng-model="content.answer.choice" /> ' +
-                 '<div class="track"> ' +
-                 '<div class="handle"></div> ' +
-                 '</div> ' +
-                 '</label> Yes',
-        'Free text': qTempl + 
-                     '<textarea class="comment" rows="4" ng-model="content.answer.choice"></textarea>',
+        Boolean: 
+           qTempl + 
+                  'No <label class="toggle toggle-positive">' +
+                  '<input type="checkbox" ng-model="content.answer.choice" /> ' +
+                  '<div class="track"> ' +
+                  '<div class="handle"></div> ' +
+                  '</div> ' +
+                  '</label> Yes',
+        'Free text': 
+           qTempl + 
+                  '<textarea class="comment" rows="4" ng-model="content.answer.choice"></textarea>',
+        'ImageChoice': 
+           qTempl +
+                  '<ion-radio name = "pref" ng-repeat="choice in content.picklist" ' + 
+                      'ng-value="choice" ng-bind-html="" ng-model="content.answer.choice"> ' +
+                      '{{ choice }}' +
+                      '<img alt="User-added image" src="http://img15.imageshack.us/img15/7656/lxi.png"></img>' +
+                  '</ion-radio>'
       },
 
       default_values = {
         Picklist: '',
         Boolean: false,
         Number: null,
-        'Free text': ''
+        'Free text': '',
+        'ImageChoice': null
       },
 
 
@@ -54,6 +65,9 @@ angular.module('flashsurvey.directives', [])
                         footer;
         if (scope.content.choices__c) {
           scope.content.picklist = scope.content.choices__c.split("\n");
+        }
+        if (scope.content.answertype__c == 'ImageChoice') {
+          scope.content.picklist = [scope.content.leftimage__c, scope.content.rightimage__c];
         }
         element.html(template);
         $compile(element.contents())(scope);

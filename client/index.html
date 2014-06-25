@@ -27,6 +27,11 @@
     <script src="js/services.js"></script>
     <script src="js/survey_question_directive.js"></script>
 
+    <script>
+      if (window.innerWidth > 500) {
+        window.location = 'web.html';
+      }
+    </script>
   </head>
 
   <body ng-app="flashsurvey" animation="slide-left-right-ios7">

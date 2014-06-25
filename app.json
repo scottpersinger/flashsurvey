@@ -1,0 +1,12 @@
+{
+  "name": "Flashsurvey",
+  "description": "Heroku Connect demonstration app",
+  "keywords": [
+    "herou connect",
+    "angularjs"
+  ],
+  "addons": [
+    "heroku-postgresql:standard-yanari"
+  ],
+  "env": {}
+}
