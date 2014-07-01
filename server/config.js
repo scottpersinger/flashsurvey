@@ -1,7 +1,11 @@
 var jsondb = require('./lib/pgdoc');
 
-DBURL = "postgres://u8rhmp60csqisk:p4h0is6rj5qi8u1na4lpkv1gjp9@ec2-54-225-241-2.compute-1.amazonaws.com:5462/d36vcnnn386efv?ssl=true";
-//DBURL = "postgres://localhost/connect_dev";
+DBURL = process.env.DATABASE_URL || process.env.SYNC_DB;
+if (DBURL) {
+	DBURL += "?ssl=true";
+} else {
+	DBURL = "postgres://localhost/connect_dev";
+}
 
 module.exports = {
 	TWITTER_CONSUMER_KEY: '2FLFjvgAmSI0T76Qxn8qx3oVc',

@@ -37,9 +37,12 @@ they appear.
 
 ### Clone the Flash Survey Node.js app
 
-You need `NPM` installed on your system. Install it from here:
+You need `npm`, the Node.js package manager installed on your system. Install Node from here:
 
-    $ npm install loc
+    http://nodejs.org/
+
+or use:
+    brew install node
 
 Now clone the Flash Survey Node.js app:
 

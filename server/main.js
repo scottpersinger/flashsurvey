@@ -28,10 +28,13 @@ app.use(function(err, req, res, next){
   res.send(500, err.message);
 });
 
+app.all('/*', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
+  res.header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
+  next();
+});
 
-app.post('/register', auth.signup);
-app.post('/login', auth.login);
-app.post('/logout', auth.validateToken, auth.logout);
 
 var api = express.Router();
 
@@ -83,6 +86,10 @@ api.post('/flashquestionresponse__c', function(req, res) {
 		return res.send(JSON.stringify(result));
 	})
 });
+api.post('/register', auth.signup);
+api.post('/login', auth.login);
+api.post('/logout', auth.validateToken, auth.logout);
+
 
 
 app.use('/api', api);

@@ -1,10 +1,10 @@
 angular.module('flashsurvey.controllers', ['ionic'])
 
-.controller('LoginCtrl', function($scope, $http, $state, $rootScope, $window, $ionicPopup, $ionicNavBarDelegate) {
+.controller('LoginCtrl', function($scope, $http, $state, $rootScope, $window, $ionicPopup, $ionicNavBarDelegate, HOST) {
 	$scope.user = {email: '', password: ''};
 
 	$scope.login = function() {
-		$http.post('/login', $scope.user)
+		$http.post(HOST + 'login', $scope.user)
 			.success(function (data) {
                 $rootScope.user = data.user;
                 $window.localStorage.user = JSON.stringify(data.user);
@@ -17,11 +17,11 @@ angular.module('flashsurvey.controllers', ['ionic'])
 	}
 })
 
-.controller('RegisterCtrl', function($scope, $rootScope, $http, $window, $ionicNavBarDelegate) {
+.controller('RegisterCtrl', function($scope, $rootScope, $http, $window, $ionicNavBarDelegate, HOST) {
 	$scope.user = {email: '', password: ''};
 
 	$scope.register = function() {
-		$http.post('/register', $scope.user)
+		$http.post(HOST + 'register', $scope.user)
 			.success(function (data) {
                 $rootScope.user = data.user;
                 $window.localStorage.user = JSON.stringify(data.user);
@@ -32,14 +32,14 @@ angular.module('flashsurvey.controllers', ['ionic'])
 
 })
 
-.controller('SurveyListCtrl', function($scope, $state, $http, $rootScope, $window, $ionicViewService, Survey) {
+.controller('SurveyListCtrl', function($scope, $state, $http, $rootScope, $window, $ionicViewService, Survey, HOST) {
 	$scope.surveys = Survey.query();
 
 	$scope.logout = function() {
         $rootScope.user = null;
         $window.localStorage.clear();
 
-        var promise = $http.post('/logout');
+        var promise = $http.post(HOST + 'logout');
         $window.localStorage.clear();
         $ionicViewService.clearHistory()
         $state.go('index', null, {reload:true});
